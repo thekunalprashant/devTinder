@@ -1,23 +1,24 @@
 const express = require("express");
+const { adminAuth, userAuth } = require("./middlewares/auth");
 const app = express();
 
-app.get(/.*fly$/, (req, res) => {
-  res.send("jsjjssjs");
+app.use("/admin", adminAuth);
+
+app.post("/user/login", (req, res) => {
+  res.send("User logged in successfully");
 });
-app.get("/user", (req, res) => {
-  console.log(req.query);
-  const queryP = req.query;
-  res.send({ firstName: "Kunal", lastName: "Prashant" , queryP});
+
+app.get("/user", userAuth, (req, res) => {
+  res.send("User data sent");
 });
-app.post("/user", (req, res) => {
-  res.send("User Data Saved to database.");
+
+app.get("/admin/getAllData", (req, res) => {
+  res.send("All Data sent !");
 });
-app.delete("/user", (req, res) => {
-  res.send("User deleted successfully");
+
+app.get("/admin/deleteUser", (req, res) => {
+  res.send("User deleted");
 });
-// app.use("/", (req, res) => {
-//   res.send("namaste kunal!");
-// });
 
 app.listen(7777, () => {
   console.log("Server is running....");
