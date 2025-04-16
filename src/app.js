@@ -1,34 +1,35 @@
 const express = require("express");
 const { adminAuth, userAuth } = require("./middlewares/auth");
+const connectDB = require("./config/database");
+const User = require("./models/user");
+
 const app = express();
 
-app.use("/admin", adminAuth);
-
-app.get("/getUserData", (req, res) => {
+app.post("/signup", async (req, res) => {
+  const userObj = {
+    firstName: "Kunal",
+    lastName: "Prashant",
+    emailId: "kunalkabir7@gmail.com",
+    password: "Kunal@112",
+    age: 24,
+    gender: "Male",
+  };
+  const user = new User(userObj);
   try {
-    throw new Error("user data error");
-    res.send("User data");
+    await user.save();
+    res.send("User Added successfully");
   } catch (error) {
-    res.status(500).send("Some error occured contact support team")
+    res.status(400).send(error.message);
   }
 });
 
-app.get("/user", userAuth, (req, res) => {
-  res.send("User data sent");
-});
-
-app.get("/admin/getAllData", (req, res) => {
-  res.send("All Data sent !");
-});
-
-app.get("/admin/deleteUser", (req, res) => {
-  res.send("User deleted");
-});
-app.use("/", (err, req, res, next) => {
-  if (err) {
-    res.status(500).send(err.message);
-  }
-});
-app.listen(7777, () => {
-  console.log("Server is running....");
-});
+connectDB()
+  .then(() => {
+    console.log("Database connection established.");
+    app.listen(7777, () => {
+      console.log("Server is running....");
+    });
+  })
+  .catch((err) => {
+    console.error("Database can not be connected");
+  });
