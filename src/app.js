@@ -4,8 +4,13 @@ const app = express();
 
 app.use("/admin", adminAuth);
 
-app.post("/user/login", (req, res) => {
-  res.send("User logged in successfully");
+app.get("/getUserData", (req, res) => {
+  try {
+    throw new Error("user data error");
+    res.send("User data");
+  } catch (error) {
+    res.status(500).send("Some error occured contact support team")
+  }
 });
 
 app.get("/user", userAuth, (req, res) => {
@@ -19,7 +24,11 @@ app.get("/admin/getAllData", (req, res) => {
 app.get("/admin/deleteUser", (req, res) => {
   res.send("User deleted");
 });
-
+app.use("/", (err, req, res, next) => {
+  if (err) {
+    res.status(500).send(err.message);
+  }
+});
 app.listen(7777, () => {
   console.log("Server is running....");
 });
